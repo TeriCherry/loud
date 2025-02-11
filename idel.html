@@ -33,6 +33,17 @@
             justify-content: center;
         }
         
+        #toolshop {
+            border: 2px dotted white;
+            max-width: 395px;
+            min-width: 100px;
+            height: auto;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
         .ecerc {
             border-radius: 100%;
             background-color: black;
@@ -41,29 +52,77 @@
             height: 4px;
             margin: 2px;
         }
+        
+        .first {
+            border-radius: 5px;
+            background-color: black;
+            border: 2px solid green;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            color: green;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <h1 id="scorea">0</h1>
     <input type="button" value="+" onclick="inScore()" id="addbutt">
     
-    <div id="flexboxdiv1">
-    </div>
+    <div id="flexboxdiv1"></div>
+    <div id="toolshop"></div>
     
     <script>
         let score = 0;
+        let intervalId = null;
 
         function inScore() {
             score++;
             document.getElementById("scorea").innerText = score;
 
-            
-            const newDiv = document.createElement("div");
-            newDiv.className = "ecerc";
-            
-            document.getElementById("flexboxdiv1").appendChild(newDiv);
-            
-            
+            // Update the number of balls based on the score
+            updateBalls();
+
+            // Check if score is 100 or more to show the green square
+            if (score >= 100 && !document.getElementById("greenSquare")) {
+                const firstNigg = document.createElement("div");
+                firstNigg.className = "first";
+                firstNigg.id = "greenSquare";
+                firstNigg.innerText = "π";
+                firstNigg.onclick = function() {
+                    score -= 100;
+                    document.getElementById("scorea").innerText = score;
+                    startEarningPoints();
+                };
+                document.getElementById("toolshop").appendChild(firstNigg);
+            }
+        }
+
+        function updateBalls() {
+            // Clear existing balls
+            document.getElementById("flexboxdiv1").innerHTML = '';
+
+            // Create new balls based on the current score
+            for (let i = 0; i < score; i++) {
+                const newDiv = document.createElement("div");
+                newDiv.className = "ecerc";
+                document.getElementById("flexboxdiv1").appendChild(newDiv);
+            }
+        }
+
+        function startEarningPoints() {
+            if (intervalId) return; // Prevent multiple intervals
+
+            intervalId = setInterval(() => {
+                score += 3.14;
+                document.getElementById("scorea").innerText = Math.floor(score); // Display as integer
+                updateBalls();
+            }, 1000);
         }
     </script>
 </body>
